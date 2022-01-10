@@ -1,9 +1,11 @@
 # Custom-card "Waste collection"
-This is a `custom-card` to show the next waste collection date. It uses the data from the `custom_component` "Waste Collection Framework".
+This is a `custom-card` to show the next waste collection date. It uses the data from the `custom_component` "Garbage Collector by @bruxy70".
 
 ## Credits
 Author: Paddy0174 - 2021
 Version: 1.0.0
+
+Modified by: Plink1256
 
 ## Changelog
 <details>
@@ -16,7 +18,7 @@ Initial release
 ```yaml
 - type: custom:button-card
   template:
-    - custom_card_paddy_waste_collection
+    - custom_card_garbage_collection
   entity: sensor.waste_collection_paper
 ```
 
@@ -29,9 +31,9 @@ This card needs the following to function correctly:
 <th>Link</th>
 </tr>
 <tr>
-<td>Waste Collection Schedule Framework</td>
+<td>Garbage Collection</td>
 <td>yes</td>
-<td><a href="https://github.com/mampfes/hacs_waste_collection_schedule">more info</a></td>
+<td><a href="https://github.com/bruxy70/Garbage-Collection">more info</a></td>
 </tr>
 </table>
 
@@ -59,7 +61,7 @@ custom_card_paddy_waste_collection:
     - card_generic_swap
   state:
     - operator: template
-      value: "[[[ return states[entity.entity_id].attributes.daysTo == 0; ]]]"
+      value: "[[[ return states[entity.entity_id].attributes.days == 0; ]]]"
       styles:
         img_cell:
           - background-color: 'rgba(var(--color-red),0.5)'
@@ -81,7 +83,7 @@ custom_card_paddy_waste_collection:
                   return "rgba(var(--color-red),1)";
                 ]]]
     - operator: template
-      value: "[[[ return states[entity.entity_id].attributes.daysTo == 1; ]]]"
+      value: "[[[ return states[entity.entity_id].attributes.days == 1; ]]]"
       styles:
         img_cell:
           - background-color: 'rgba(var(--color-red),0.05)'
@@ -122,37 +124,10 @@ custom_card_paddy_waste_collection:
   custom_fields:
     notification: >
       [[[
-        if (entity.state == 'unavailable' || states[entity.entity_id].attributes.daysTo == 0 || states[entity.entity_id].attributes.daysTo == 1){
+        if (entity.state == 'unavailable' || states[entity.entity_id].attributes.days == 0 || states[entity.entity_id].attributes.days == 1){
           return `<ha-icon icon="mdi:exclamation" style="width: 12px; height: 12px; color: var(--primary-background-color);"></ha-icon>`
         }
       ]]]
 ```
-
-## HomeAssistant
-This is my `sensor` setup in HA. I do the change from "days" to "friendly days" in my template sensor.
-
-> #### Note
-> * Don't forget to set `add_days_to` in your `sensor` config
-> * "HEUTE" is german for today or aujourd'hui
-> * "MORGEN" is german for tomorrow or demain
-
-```yaml
-sensor:
-  - platform: waste_collection_schedule
-    name: waste_collection_paper
-    details_format: upcoming
-    add_days_to: true # this line is important
-    value_template:  >-
-      {% if value.daysTo == 0 %}
-      HEUTE
-      {% elif value.daysTo == 1 %}
-      MORGEN
-      {% else %}
-      in {{value.daysTo}} Tagen
-      {% endif %}
-    types:
-      - Papiertonne
-```
-
 ## Notes
 n/a
